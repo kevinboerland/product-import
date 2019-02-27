@@ -381,7 +381,7 @@ class MetaData
         $this->productEavAttributeInfo = $this->getProductEavAttributeInfo();
         $this->imageAttributeIds = $this->getImageAttributeIds();
 
-        if (version_compare($this->magentoVersion, "2.3.0") >= 0) {
+        if (version_compare($this->magentoVersion, "2.3.0") >= 0 && $this->moduleEnabled('Magento_Inventory')) {
             $this->sourceCodeMap = $this->getSourceCodeMap();
         }
     }
@@ -410,6 +410,20 @@ class MetaData
         }
 
         return $magentoVersion;
+    }
+
+    /**
+     * @param string $moduleName
+     * @return bool
+     */
+    protected function moduleEnabled($moduleName)
+    {
+        if (preg_match('/\'' . $moduleName . '\' => 1/',
+            file_get_contents(BP . '/app/etc/config.php'), $matches)) {
+            return true;
+        }
+
+        return false;
     }
 
     protected function getValueSerializer()
